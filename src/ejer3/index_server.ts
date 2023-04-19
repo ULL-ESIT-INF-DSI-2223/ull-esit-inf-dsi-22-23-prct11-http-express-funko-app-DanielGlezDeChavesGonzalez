@@ -150,15 +150,10 @@ servidor.delete(
       });
     }
     const app = new App(req.query.user);
-    app.cargarDatos(req.query.user);
-    console.log(app.listFunkos());
-    console.log ("id");
-    console.log(req.query.id);
-    console.log ("user");
-    console.log(req.query.user);
-    let borrado = app.removeFunko(req.query.id);
-    app.guardarDatos();
-    if (borrado) {
+      app.cargarDatos(req.query.user);
+      let removed = app.removeFunko(req.query.id);
+      app.guardarDatos();
+    if (removed) {
       return res.send({
         success: true,
       });

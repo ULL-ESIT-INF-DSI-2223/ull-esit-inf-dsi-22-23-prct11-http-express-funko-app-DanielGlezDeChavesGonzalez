@@ -95,7 +95,13 @@ export class App {
     Caracteristicas_especiales: string,
     Precio: number
   ): boolean {
-    if (!this.Funkos.has(id)) {
+    let encontrado = false;
+    this.Funkos.forEach((funko) => {
+      if (funko.id == id) {
+        encontrado = true;
+      }
+    });
+    if (!encontrado) {
       const funko = new Funko(
         id,
         name,
@@ -142,7 +148,13 @@ export class App {
     Caracteristicas_especiales: string,
     Precio: number
   ): boolean {
-    if (this.Funkos.has(id)) {
+    let encontrado = false;
+    this.Funkos.forEach((funko) => {
+      if (funko.id == id) {
+        encontrado = true;
+      }
+    });
+    if (encontrado) {
       const funko = new Funko(
         id,
         name,
@@ -169,7 +181,16 @@ export class App {
    * @returns devuelve true si se ha eliminado correctamente
    */
   public removeFunko(id: number): boolean {
-    if (this.Funkos.has(id)) {
+    let encontrado = false;
+    this.Funkos.forEach((funko) => {
+      if (funko.id == id) {
+        encontrado = true;
+      }
+    });
+
+    console.log("./data/" + this.Usuario + "/" + id + ".json");
+
+    if (encontrado) {
       fs.unlinkSync("./data/" + this.Usuario + "/" + id + ".json");
       this.Funkos.delete(id);
       return true;
