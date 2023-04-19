@@ -1,7 +1,6 @@
 import * as fs from "fs";
-import { Funko } from "./datatype/Funko";
-import { Tipos, Genero } from "./datatype/Tipos";
-import * as chalk from "chalk";
+import { Funko } from "./datatype/Funko.js";
+import { Tipos, Genero } from "./datatype/Tipos.js";
 import * as path from "path";
 
 /**

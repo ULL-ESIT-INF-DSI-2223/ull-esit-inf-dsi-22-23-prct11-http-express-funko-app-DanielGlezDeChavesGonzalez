@@ -1,8 +1,8 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { Tipos, Genero, asignarTipo, asignarGenero } from "./datatype/Tipos";
+import { Tipos, Genero, asignarTipo, asignarGenero } from "./datatype/Tipos.js";
 import * as chalk from "chalk";
-import { Funko } from "./datatype/Funko";
+import { Funko } from "./datatype/Funko.js";
 import * as net from "net";
 
 /**

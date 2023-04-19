@@ -1,4 +1,4 @@
-import { Genero, Tipos } from "./Tipos";
+import { Genero, Tipos } from "./Tipos.js";
 
 /**
  * Clase Funko
