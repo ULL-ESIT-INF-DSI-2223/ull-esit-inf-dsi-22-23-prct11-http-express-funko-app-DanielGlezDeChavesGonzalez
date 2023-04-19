@@ -1,13 +1,11 @@
 import { App } from "./FunkoApp.js";
 import { Funko } from "./datatype/Funko.js";
-import * as net from "net";
 import express from "express";
 
 /**
  * Tipo de peticion
  */
 export type RequestType = {
-  type: "add" | "update" | "remove" | "read" | "list";
   user: string;
   funkoPop?: Funko;
   id?: number;
@@ -17,11 +15,8 @@ export type RequestType = {
  * Tipo de respuesta
  */
 export type ResponseType = {
-  type: "add" | "update" | "remove" | "read" | "list";
-  user: string;
   success: boolean;
-  funkoPop?: Funko;
-  funkolist?: Funko[];
+  funkoPops?: Funko[];
 };
 
 const servidor = express();
@@ -32,167 +27,195 @@ servidor.get(
     req: {
       query: {
         user: string;
-        type: "add" | "update" | "remove" | "read" | "list";
         funkoPop?: Funko;
         id?: number;
       };
     },
     res: {
-      send: (arg0: {
-        error?: string;
-        type?: "add" | "update" | "remove" | "read" | "list";
-        user?: string;
-        success?: boolean;
-        funkoPop?: Funko | undefined;
-        funkolist?: Funko[] | undefined;
-      }) => void;
+      send: (arg0: ResponseType) => void;
     }
   ) => {
     if (!req.query.user) {
       return res.send({
-        error: "error 404 - no se ha proporcionado un usuario ",
+        success: false,
       });
     }
-    if (!req.query.type) {
+    const app = new App(req.query.user);
+    app.cargarDatos(req.query.user);
+    if (req.query.id) {
+      const funkoPop = app.showFunkoById(req.query.id);
+      if (funkoPop) {
+        return res.send({
+          success: true,
+          funkoPops: [funkoPop],
+        });
+      } else {
+        return res.send({
+          success: false,
+        });
+      }
+    } else {
       return res.send({
-        error: "error 404 - no se ha proporcionado un tipo de peticion ",
+        success: true,
+        funkoPops: app.listFunkos(),
       });
     }
-    if (req.query.type == "add") {
-      if (!req.query.funkoPop) {
-        return res.send({
-          error: "error 404 - no se ha proporcionado un funko ",
-        });
-      }
-      const app = new App(req.query.user);
-      app.cargarDatos(req.query.user);
-      let added = app.addFunko(
-        req.query.user,
-        req.query.funkoPop.id,
-        req.query.funkoPop.name,
-        req.query.funkoPop.description,
-        req.query.funkoPop.Tipo,
-        req.query.funkoPop.Genero,
-        req.query.funkoPop.Franquicia,
-        req.query.funkoPop.Numero_franquicia,
-        req.query.funkoPop.Exclusivo,
-        req.query.funkoPop.Caracteristicas_especiales,
-        req.query.funkoPop.Precio
-      );
-      app.guardarDatos();
-      if (added) {
-        let response: ResponseType = {
-          type: "add",
-          user: req.query.user,
-          success: true,
-        };
-        res.send(response);
-      } else {
-        let response: ResponseType = {
-          type: "add",
-          user: req.query.user,
-          success: false,
-        };
-        res.send(response);
-      }
-    }
-    if (req.query.type == "list") {
-      const app = new App(req.query.user);
-      app.cargarDatos(req.query.user);
-      let list = app.listFunkos();
-      let response: ResponseType = {
-        type: "list",
-        user: req.query.user,
-        success: true,
-        funkolist: list,
+  }
+);
+
+servidor.post(
+  "/funko",
+  (
+    req: {
+      query: {
+        user: string;
+        funkoPop?: Funko;
+        id?: number;
       };
-      res.send(response);
+    },
+    res: {
+      send: (arg0: ResponseType) => void;
     }
-    if (req.query.type == "read") {
-      if (!req.query.id) {
-        return res.send({
-          error: "error 404 - no se ha proporcionado un id ",
-        });
-      }
-      const app = new App(req.query.user);
-      app.cargarDatos(req.query.user);
-      let read = app.showFunkoById(req.query.id);
-      let response: ResponseType = {
-        type: "read",
-        user: req.query.user,
+  ) => {
+    if (!req.query.user) {
+      return res.send({
+        success: false,
+      });
+    }
+    if (!req.query.funkoPop) {
+      return res.send({
+        success: false,
+      });
+    }
+    const app = new App(req.query.user);
+    app.cargarDatos(req.query.user);
+    console.log(req.query.funkoPop.id);
+    console.log(req.query.funkoPop.name);
+    console.log(req.query.funkoPop.description);
+    console.log(req.query.funkoPop.Tipo);
+    console.log(req.query.funkoPop.Genero);
+    console.log(req.query.funkoPop.Franquicia);
+    console.log(req.query.funkoPop.Numero_franquicia);
+    console.log(req.query.funkoPop.Exclusivo);
+    console.log(req.query.funkoPop.Caracteristicas_especiales);
+    console.log(req.query.funkoPop.Precio);
+
+    let added = app.addFunko(
+      req.query.user,
+      req.query.funkoPop.id,
+      req.query.funkoPop.name,
+      req.query.funkoPop.description,
+      req.query.funkoPop.Tipo,
+      req.query.funkoPop.Genero,
+      req.query.funkoPop.Franquicia,
+      req.query.funkoPop.Numero_franquicia,
+      req.query.funkoPop.Exclusivo,
+      req.query.funkoPop.Caracteristicas_especiales,
+      req.query.funkoPop.Precio
+    );
+    app.guardarDatos();
+    if (added) {
+      return res.send({
         success: true,
-        funkoPop: read,
+      });
+    }
+    return res.send({
+      success: false,
+    });
+  }
+);
+
+servidor.delete(
+  "/funko",
+  (
+    req: {
+      query: {
+        user: string;
+        funkoPop?: Funko;
+        id?: number;
       };
-      res.send(response);
+    },
+    res: {
+      send: (arg0: ResponseType) => void;
     }
-    if (req.query.type == "update") {
-      if (!req.query.funkoPop) {
-        return res.send({
-          error: "error 404 - no se ha proporcionado un funko ",
-        });
-      }
-      if (!req.query.id) {
-        return res.send({
-          error: "error 404 - no se ha proporcionado un id ",
-        });
-      }
-      const app = new App(req.query.user);
-      app.cargarDatos(req.query.user);
-      let updated = app.modifyFunko(
-        req.query.id,
-        req.query.funkoPop.name,
-        req.query.funkoPop.description,
-        req.query.funkoPop.Tipo,
-        req.query.funkoPop.Genero,
-        req.query.funkoPop.Franquicia,
-        req.query.funkoPop.Numero_franquicia,
-        req.query.funkoPop.Exclusivo,
-        req.query.funkoPop.Caracteristicas_especiales,
-        req.query.funkoPop.Precio
-      );
-      app.guardarDatos();
-      if (updated) {
-        let response: ResponseType = {
-          type: "update",
-          user: req.query.user,
-          success: true,
-        };
-        res.send(response);
-      } else {
-        let response: ResponseType = {
-          type: "update",
-          user: req.query.user,
-          success: false,
-        };
-        res.send(response);
-      }
+  ) => {
+    if (!req.query.user) {
+      return res.send({
+        success: false,
+      });
     }
-    if (req.query.type == "remove") {
-      if (!req.query.id) {
-        return res.send({
-          error: "error 404 - no se ha proporcionado un id ",
-        });
-      }
-      const app = new App(req.query.user);
-      app.cargarDatos(req.query.user);
-      let removed = app.removeFunko(req.query.id);
-      app.guardarDatos();
-      if (removed) {
-        let response: ResponseType = {
-          type: "remove",
-          user: req.query.user,
-          success: true,
-        };
-        res.send(response);
-      } else {
-        let response: ResponseType = {
-          type: "remove",
-          user: req.query.user,
-          success: false,
-        };
-        res.send(response);
-      }
+    if (!req.query.id) {
+      return res.send({
+        success: false,
+      });
     }
+    const app = new App(req.query.user);
+    app.cargarDatos(req.query.user);
+    console.log(app.listFunkos());
+    console.log ("id");
+    console.log(req.query.id);
+    console.log ("user");
+    console.log(req.query.user);
+    let borrado = app.removeFunko(req.query.id);
+    app.guardarDatos();
+    if (borrado) {
+      return res.send({
+        success: true,
+      });
+    }
+    return res.send({
+      success: false,
+    });
+  }
+);
+
+servidor.patch(
+  "/funko",
+  (
+    req: {
+      query: {
+        user: string;
+        funkoPop?: Funko;
+        id?: number;
+      };
+    },
+    res: {
+      send: (arg0: ResponseType) => void;
+    }
+  ) => {
+    if (!req.query.user) {
+      return res.send({
+        success: false,
+      });
+    }
+    if (!req.query.funkoPop) {
+      return res.send({
+        success: false,
+      });
+    }
+    const app = new App(req.query.user);
+    app.cargarDatos(req.query.user);
+    let modificado = app.modifyFunko(
+      req.query.funkoPop.id,
+      req.query.funkoPop.name,
+      req.query.funkoPop.description,
+      req.query.funkoPop.Tipo,
+      req.query.funkoPop.Genero,
+      req.query.funkoPop.Franquicia,
+      req.query.funkoPop.Numero_franquicia,
+      req.query.funkoPop.Exclusivo,
+      req.query.funkoPop.Caracteristicas_especiales,
+      req.query.funkoPop.Precio
+    );
+    app.guardarDatos();
+    if (modificado) {
+      return res.send({
+        success: true,
+      });
+    }
+    return res.send({
+      success: false,
+    });
   }
 );
 

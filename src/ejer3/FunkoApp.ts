@@ -196,6 +196,7 @@ export class App {
    */
   public showFunkoById(id: number): Funko | undefined {
     if (this.Funkos.has(id)) {
+      console.log(this.Funkos.get(id));
       const funko = this.Funkos.get(id);
       if (funko !== undefined) {
         return this.Funkos.get(id);
