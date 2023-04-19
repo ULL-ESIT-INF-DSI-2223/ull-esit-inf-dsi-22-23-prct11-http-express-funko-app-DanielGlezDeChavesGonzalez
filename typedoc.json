@@ -1,0 +1,7 @@
+{
+    "entryPoints": [
+        "./src/ejer3/**/*.ts",
+        "./src/ejer3/*.ts",
+    ],
+    "out": "./docs",
+}
