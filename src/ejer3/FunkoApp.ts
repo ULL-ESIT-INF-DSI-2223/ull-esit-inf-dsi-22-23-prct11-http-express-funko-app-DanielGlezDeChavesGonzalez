@@ -192,7 +192,8 @@ export class App {
 
     if (encontrado) {
       fs.unlinkSync("./data/" + this.Usuario + "/" + id + ".json");
-      this.Funkos.delete(id);
+      let borrado = this.Funkos.delete(id);
+      console.log(borrado);
       return true;
     }
     return false;
