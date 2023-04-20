@@ -22,6 +22,10 @@ export type ResponseType = {
   funkoPops?: Funko[];
 };
 
+/**
+ * realiza una peticion GET
+ * @param req Peticion
+ */
 const showRequest = (req: RequestType) => {
   if (req.id) {
     const url = `http://localhost:3000/funko?user=${req.user}&id=${req.id}`;
@@ -57,6 +61,10 @@ const showRequest = (req: RequestType) => {
   }
 };
 
+/**
+ * realiza una peticion POST
+ * @param req Peticion
+ */
 const addRequest = (req: RequestType) => {
   if (req.funkoPop) {
     const url = `http://localhost:3000/funko?user=${req.user}&funkoPop=${req.funkoPop}`;
@@ -82,6 +90,10 @@ const addRequest = (req: RequestType) => {
   }
 };
 
+/**
+ * realiza una peticion DELETE
+ * @param req Peticion
+ */
 const deleteRequest = (req: RequestType) => {
   if (req.id) {
     const url = `http://localhost:3000/funko?user=${req.user}&id=${req.id}`;
@@ -100,6 +112,10 @@ const deleteRequest = (req: RequestType) => {
   }
 };
 
+/**
+ * realiza una peticion PATCH
+ * @param req Peticion
+ */
 const updateRequest = (req: RequestType) => {
   if (req.id && req.funkoPop) {
     const url = `http://localhost:3000/funko?user=${req.user}&funkoPop=${req.funkoPop}`;
