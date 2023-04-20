@@ -1,12 +1,12 @@
 import "mocha";
 import { expect } from "chai";
-import { Funko } from "../src/ejer3/datatype/Funko";
+import { Funko } from "../src/ejer3/datatype/Funko.js";
 import {
   Tipos,
   Genero,
   asignarTipo,
   asignarGenero,
-} from "../src/ejer3/datatype/Tipos";
+} from "../src/ejer3/datatype/Tipos.js";
 
 describe("Funko", () => {
   it("should create an instance of Funko", () => {

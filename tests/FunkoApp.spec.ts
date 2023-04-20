@@ -1,9 +1,9 @@
 import "mocha";
 import { expect } from "chai";
-import { App } from "../src/ejer3/FunkoApp";
-import { Funko } from "../src/ejer3/datatype/Funko";
+import { App } from "../src/ejer3/FunkoApp.js";
+import { Funko } from "../src/ejer3/datatype/Funko.js";
 import * as fs from "fs";
-import { Tipos, Genero } from "../src/ejer3/datatype/Tipos";
+import { Tipos, Genero } from "../src/ejer3/datatype/Tipos.js";
 
 describe("FunkoApp", () => {
   it("should cargar datos", () => {
