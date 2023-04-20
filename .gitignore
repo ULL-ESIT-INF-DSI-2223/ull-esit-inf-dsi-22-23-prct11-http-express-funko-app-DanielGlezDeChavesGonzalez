@@ -1,6 +1,7 @@
 dist/
 node_modules/
-febeprograma.sh
 .nyc_output/
 .vscode/
+coverage/
+
 

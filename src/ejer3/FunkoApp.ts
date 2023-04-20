@@ -3,12 +3,17 @@ import { Funko } from "./datatype/Funko.js";
 import { Tipos, Genero } from "./datatype/Tipos.js";
 import * as path from "path";
 
+export type ParejaIDFunko = {
+  id: number;
+  funko: Funko;
+};
+
 /**
  * Clase App
  */
 export class App {
   private Usuario: string;
-  private Funkos: Map<number, Funko> = new Map<number, Funko>();
+  private Funkos: ParejaIDFunko[] = [];
 
   /**
    * constructor de la clase App
@@ -36,7 +41,7 @@ export class App {
       archivos.forEach((archivo) => {
         const ruta: string = path.join(carpeta, archivo);
         const funko: Funko = JSON.parse(fs.readFileSync(ruta, "utf-8"));
-        this.Funkos.set(funko.id, funko);
+        this.Funkos.push({ id: funko.id, funko: funko });
       });
     }
     return true;
@@ -64,7 +69,12 @@ export class App {
    * @returns devuelve el funko con el id indicado
    */
   public getFunko(id: number): Funko | undefined {
-    return this.Funkos.get(id);
+    const funko = this.Funkos.find((funko) => funko.id == id);
+    if (funko) {
+      return funko.funko;
+    } else {
+      return undefined;
+    }
   }
 
   /**
@@ -95,13 +105,14 @@ export class App {
     Caracteristicas_especiales: string,
     Precio: number
   ): boolean {
-    let encontrado = false;
+    let existe = false;
     this.Funkos.forEach((funko) => {
       if (funko.id == id) {
-        encontrado = true;
+        existe = true;
       }
     });
-    if (!encontrado) {
+
+    if (!existe) {
       const funko = new Funko(
         id,
         name,
@@ -148,13 +159,14 @@ export class App {
     Caracteristicas_especiales: string,
     Precio: number
   ): boolean {
-    let encontrado = false;
+    let existe = false;
     this.Funkos.forEach((funko) => {
       if (funko.id == id) {
-        encontrado = true;
+        existe = true;
       }
     });
-    if (encontrado) {
+
+    if (existe) {
       const funko = new Funko(
         id,
         name,
@@ -181,19 +193,21 @@ export class App {
    * @returns devuelve true si se ha eliminado correctamente
    */
   public removeFunko(id: number): boolean {
-    let encontrado = false;
+    let existe = false;
     this.Funkos.forEach((funko) => {
       if (funko.id == id) {
-        encontrado = true;
+        existe = true;
       }
     });
 
-    console.log("./data/" + this.Usuario + "/" + id + ".json");
-
-    if (encontrado) {
+    if (existe) {
       fs.unlinkSync("./data/" + this.Usuario + "/" + id + ".json");
-      let borrado = this.Funkos.delete(id);
-      console.log(borrado);
+      this.Funkos.forEach((funko) => {
+        if (funko.id == id) {
+          this.Funkos.splice(this.Funkos.indexOf(funko), 1);
+        }
+      });
+
       return true;
     }
     return false;
@@ -206,7 +220,7 @@ export class App {
   public listFunkos(): Funko[] {
     const funkos: Funko[] = [];
     this.Funkos.forEach((funko) => {
-      funkos.push(funko);
+      funkos.push(funko.funko);
     });
     return funkos;
   }
@@ -217,11 +231,17 @@ export class App {
    * @returns devuelve true si se ha mostrado correctamente
    */
   public showFunkoById(id: number): Funko | undefined {
-    if (this.Funkos.has(id)) {
-      console.log(this.Funkos.get(id));
-      const funko = this.Funkos.get(id);
+    let existe = false;
+    this.Funkos.forEach((funko) => {
+      if (funko.id == id) {
+        existe = true;
+      }
+    });
+
+    if (existe) {
+      const funko = this.Funkos.find((funko) => funko.id == id);
       if (funko !== undefined) {
-        return this.Funkos.get(id);
+        return funko.funko;
       }
     }
     return undefined;

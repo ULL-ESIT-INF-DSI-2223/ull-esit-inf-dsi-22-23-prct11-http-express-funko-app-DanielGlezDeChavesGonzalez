@@ -150,12 +150,9 @@ servidor.delete(
       });
     }
     const app = new App(req.query.user);
-      app.cargarDatos(req.query.user);
-      let funkos = app.listFunkos();
-      console.log(funkos);
-      let removed = app.removeFunko(req.query.id);
-      console.log(app.listFunkos());
-      app.guardarDatos();
+    app.cargarDatos(req.query.user);
+    let removed = app.removeFunko(req.query.id);
+    app.guardarDatos();
     if (removed) {
       return res.send({
         success: true,

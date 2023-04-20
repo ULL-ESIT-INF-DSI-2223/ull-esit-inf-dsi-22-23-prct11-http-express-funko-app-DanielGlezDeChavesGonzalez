@@ -5,7 +5,6 @@ import * as chalk from "chalk";
 import { Funko } from "./datatype/Funko.js";
 import request from "request";
 
-
 /**
  * Tipo de peticion
  */
